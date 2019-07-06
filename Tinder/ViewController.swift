@@ -12,14 +12,28 @@ class ViewController: UIViewController {
   
   @IBOutlet weak var basicCard: UIView!
   @IBOutlet weak var likeImageView: UIImageView!
+
+  @IBOutlet weak var person1: UIView!
+  @IBOutlet weak var person2: UIView!
+  @IBOutlet weak var person3: UIView!
+  @IBOutlet weak var person4: UIView!
   
   var centerOfCard:CGPoint!
+  var people = [UIView]()
+  var selectedCardCount: Int = 0
   
   // アプリが起動した時、この画面が読み込まれた時のイベント処理
   override func viewDidLoad() {
     super.viewDidLoad()
+    
     // basicCardの中央の初期値をcardOfCenterに代入
     centerOfCard = basicCard.center
+    
+    // 配列にUIViewを格納
+    people.append(person1)
+    people.append(person2)
+    people.append(person3)
+    people.append(person4)
   }
   
   // storyboardに紐づけているのを表すのが、IBAction
@@ -27,16 +41,20 @@ class ViewController: UIViewController {
   @IBAction func swipeCard(_ sender: UIPanGestureRecognizer) {
     // senderにはスワイプされたbasicCardが入っている
     let card = sender.view!
+    
     // storyboardにあるviewを基準にどれだけ動いたかをpointに代入している
     let point = sender.translation(in: view)
     
     // cardの中央の座標に対して、スワイプで動作させたxy座標を代入している
     card.center = CGPoint(x: card.center.x + point.x, y: card.center.y + point.y)
+    people[selectedCardCount].center = CGPoint(x: card.center.x + point.x, y: card.center.y + point.y)
     
     // デバイスの中央座標とじスワイプしたx座標の差を求める
     let xFromCenter = card.center.x - view.center.x
+    
     // 角度を変化させる
     card.transform = CGAffineTransform(rotationAngle: xFromCenter / (view.frame.width / 2) * -0.785)
+    people[selectedCardCount].transform = CGAffineTransform(rotationAngle: xFromCenter / (view.frame.width / 2) * -0.785)
     
     // 画像が左右にスワイプされた時に動作に応じて、グッド、バッド画像を表示する
     if xFromCenter > 0 {
